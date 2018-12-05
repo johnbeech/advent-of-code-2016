@@ -13,8 +13,9 @@ async function run () {
 
 function parseDirectionCode(code) {
   return {
+    code,
     turnDirection: code.charAt(0) === 'L' ? -1 : 1,
-    distance: Number.parseInt(code.charAt(1))
+    distance: Number.parseInt(code.match(/[LR](\d+)/)[1])
   }
 }
 
@@ -39,6 +40,7 @@ async function solveForFirstStar(directions) {
     }
     position.x = direction.position.x
     position.y = direction.position.y
+    report('Direction', direction.code, 'Position', position)
   })
 
   let solution = Math.abs(position.x) + Math.abs(position.y)
