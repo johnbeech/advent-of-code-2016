@@ -40,15 +40,40 @@ async function solveForFirstStar(directions) {
     }
     position.x = direction.position.x
     position.y = direction.position.y
-    report('Direction', direction.code, 'Position', position)
   })
 
   let solution = Math.abs(position.x) + Math.abs(position.y)
   report('Solution 1:', solution, position)
 }
 
-async function solveForSecondStar(input) {
+async function solveForSecondStar(directions) {
+  const compass = [North, East, South, West]
+  let facing = 0
+  let position = { x: 0, y: 0 }
+  let visitedLocations = { '0,0': true }
   let solution = 'UNSOLVED'
+  directions.forEach(direction => {
+    facing = facing + direction.turnDirection
+    if (facing < 0) {
+      facing = facing + compass.length
+    }
+    direction.facing = compass[facing % compass.length]
+    for (let i=1; i<=direction.distance; i++) {
+      direction.position = {
+        x: position.x + (direction.facing.dx * i),
+        y: position.y + (direction.facing.dy * i)
+      }
+      position.x = direction.position.x
+      position.y = direction.position.y
+      let posKey = position.x + ',' + position.y
+      if (visitedLocations[posKey] && solution === 'UNSOLVED') {
+        solution = Math.abs(position.x) + Math.abs(position.y)
+      } else {
+        visitedLocations[posKey] = true
+      }
+    }
+  })
+  report('Visited Locations', visitedLocations)
   report('Solution 2:', solution)
 }
 
